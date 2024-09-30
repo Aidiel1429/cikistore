@@ -1,7 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
 
-const Tambah = ({ reload }: { reload: Function }) => {
+// Definisikan tipe untuk reload function
+type ReloadFunction = () => void;
+
+const Tambah = ({ reload }: { reload: ReloadFunction }) => {
   const [modal, setModal] = useState(false);
   const [nama, setNama] = useState("");
 
@@ -9,26 +12,32 @@ const Tambah = ({ reload }: { reload: Function }) => {
     setModal(!modal);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    // Tambahkan tipe untuk event
+    e.preventDefault(); // Mencegah reload halaman
     const formData = new FormData();
     formData.append("nama", nama);
 
-    const res = await axios.post("/api/transaksi", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    try {
+      const res = await axios.post("/api/transaksi", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-    if (res.data.pesan === "sukses") {
-      setModal(false);
-      reload();
-    } else {
-      console.log("Terjadi Kesalahan");
+      if (res.data.pesan === "sukses") {
+        setModal(false);
+        reload();
+      } else {
+        console.log("Terjadi Kesalahan");
+      }
+    } catch (error) {
+      console.error("Error saat mengirim data:", error); // Menangani kesalahan
     }
   };
+
   return (
     <div>
-      {/* Open the modal using document.getElementById('ID').showModal() method */}
       <button className="btn btn-primary text-white" onClick={handleModal}>
         Tambah
       </button>

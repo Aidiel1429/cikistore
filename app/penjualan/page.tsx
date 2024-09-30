@@ -1,5 +1,5 @@
 "use client"; // Pastikan ini adalah komponen klien
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react"; // Impor useCallback untuk mendefinisikan loadPenjualan
 import { useSearchParams } from "next/navigation"; // Impor useSearchParams
 import axios from "axios";
 import Loading from "../components/loading";
@@ -9,6 +9,7 @@ interface Penjualan {
   id: string;
   nama: string;
   pendapatan: number;
+  namaPelanggan: string; // Tambahkan field ini untuk tipe Penjualan
 }
 
 export default function Home() {
@@ -17,15 +18,14 @@ export default function Home() {
   const [penjualans, setPenjualans] = useState<Penjualan[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    loadPenjualan();
-  }, [id]); // Tambahkan id sebagai dependensi
-
-  const loadPenjualan = async () => {
+  const loadPenjualan = useCallback(async () => {
+    if (!id) return; // Periksa apakah id ada
     setIsLoading(true);
     try {
       const res = await axios.get(`/api/penjualan/${id}`);
-      const hasil = await res.data;
+      const hasil = res.data;
+
+      console.log("Hasil dari API:", hasil); // Tambahkan log untuk memeriksa data
 
       if (Array.isArray(hasil.penjualan)) {
         setPenjualans(hasil.penjualan);
@@ -39,7 +39,11 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id]); // Tambahkan id sebagai dependensi
+
+  useEffect(() => {
+    loadPenjualan();
+  }, [loadPenjualan]); // Tambahkan loadPenjualan sebagai dependensi
 
   return (
     <>
@@ -55,8 +59,8 @@ export default function Home() {
               <tr>
                 <th>No</th>
                 <th>Name</th>
-                <th>Job</th>
-                <th>Favorite Color</th>
+                <th>Nama Pelanggan</th>
+                <th>Pendapatan</th>
               </tr>
             </thead>
             <tbody>
@@ -67,14 +71,19 @@ export default function Home() {
                   </td>
                 </tr>
               ) : (
-                penjualans.map((item: any, index) => (
-                  <tr key={item.id}>
-                    <th>{index + 1}</th>
-                    <td>{item.nama}</td>
-                    <td>{item.namaPelanggan}</td>
-                    <td>{item.pendapatan}</td>
-                  </tr>
-                ))
+                penjualans.map(
+                  (
+                    item: Penjualan,
+                    index // Ganti any dengan tipe Penjualan
+                  ) => (
+                    <tr key={item.id}>
+                      <th>{index + 1}</th>
+                      <td>{item.nama}</td>
+                      <td>{item.namaPelanggan}</td>
+                      <td>{item.pendapatan}</td>
+                    </tr>
+                  )
+                )
               )}
             </tbody>
           </table>

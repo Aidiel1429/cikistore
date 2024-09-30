@@ -5,8 +5,15 @@ import axios from "axios";
 import Link from "next/link";
 import Loading from "../components/loading";
 
+// Definisikan tipe untuk transaksi
+interface Transaksi {
+  id: string;
+  nama: string;
+  // Tambahkan field lain sesuai kebutuhan
+}
+
 const Transaksi = () => {
-  const [transaksi, setTransaksi] = useState([]);
+  const [transaksi, setTransaksi] = useState<Transaksi[]>([]); // Gunakan tipe Transaksi
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -18,7 +25,13 @@ const Transaksi = () => {
     try {
       const res = await axios.get("/api/transaksi");
       const hasil = res.data.transaksi;
-      setTransaksi(hasil);
+
+      // Pastikan hasil adalah array dari tipe Transaksi
+      if (Array.isArray(hasil)) {
+        setTransaksi(hasil);
+      } else {
+        console.error("Data tidak sesuai:", hasil);
+      }
     } catch (error) {
       console.log("Terjadi Kesalahan", error);
     } finally {
@@ -37,7 +50,7 @@ const Transaksi = () => {
           <Tambah reload={loadTransaksi} />
         </div>
         <div className="w-full text-center">{isLoading && <Loading />}</div>
-        {transaksi.map((item: any) => (
+        {transaksi.map((item) => (
           <div key={item.id}>
             <Link href={`/penjualan?id=${item.id}`}>
               <div className="flex justify-between p-3 hover:bg-slate-400/25 transition-all rounded-lg cursor-pointer">
