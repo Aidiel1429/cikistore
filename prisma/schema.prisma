@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model transaksiTb {
+  id        Int           @id @default(autoincrement())
+  nama      String
+  penjualan penjualanTb[] // Satu transaksi bisa punya banyak penjualan
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model penjualanTb {
+  id            Int         @id @default(autoincrement())
+  nama          String
+  kategori      String
+  tanggal       DateTime
+  pendapatan    Int
+  modal         Int
+  namaPelanggan String
+  status        String
+  transaksi     transaksiTb @relation(fields: [transaksiId], references: [id]) // Relasi many-to-one
+  transaksiId   Int // Foreign key untuk transaksiTb
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  hutangTb      hutangTb[]
+}
+
+model hutangTb {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  hutang      String
+  penjualanId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  penjualanTb penjualanTb @relation(fields: [penjualanId], references: [id], onDelete: Cascade)
+}
