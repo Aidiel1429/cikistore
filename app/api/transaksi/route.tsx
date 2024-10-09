@@ -14,11 +14,14 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const transaksi = await prisma.transaksiTb.findMany({
+  const res = await prisma.transaksiTb.findMany({
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      penjualan: true,
+    },
   });
 
-  return NextResponse.json({ transaksi, status: 200 });
+  return NextResponse.json(res);
 }

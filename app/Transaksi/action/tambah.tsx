@@ -28,6 +28,7 @@ const Tambah = ({ reload }: { reload: ReloadFunction }) => {
       if (res.data.pesan === "sukses") {
         setModal(false);
         reload();
+        setNama("");
       } else {
         console.log("Terjadi Kesalahan");
       }
