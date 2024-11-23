@@ -1,18 +1,12 @@
 "use client";
-import { Poppins } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./components/sidebar";
 import Header from "./components/header";
 import { useEffect, useState } from "react";
 import Loader from "@/app/components/loading";
 
-const poppins = Poppins({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  display: "swap",
-  fallback: ["system-ui", "arial"],
-});
+const inter = Montserrat({ subsets: ["latin"] });
 export default function RootLayout({
   children,
 }: {
@@ -29,7 +23,7 @@ export default function RootLayout({
   }, []);
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased w-full`}>
+      <body className={`${inter.className} antialiased w-full`}>
         {isLoading ? (
           <div className="flex justify-center items-center min-h-screen">
             <Loader />
