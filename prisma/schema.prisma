@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model hutangTb {
+  id           Int         @id @default(autoincrement())
+  nama         String
+  hutang       String
+  tanggalBayar DateTime
+  penjualanId  Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime
+  penjualanTb  penjualanTb @relation(fields: [penjualanId], references: [id], onDelete: Cascade)
+}
+
+model penjualanTb {
+  id            Int         @id @default(autoincrement())
+  nama          String
+  kategori      String
+  tanggal       DateTime
+  pendapatan    Int
+  modal         Int
+  namaPelanggan String
+  status        String
+  transaksiId   Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime
+  hutangTb      hutangTb[]
+  transaksiTb   transaksiTb @relation(fields: [transaksiId], references: [id])
+}
+
+model transaksiTb {
+  id          Int           @id @default(autoincrement())
+  nama        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime
+  penjualanTb penjualanTb[]
+}
