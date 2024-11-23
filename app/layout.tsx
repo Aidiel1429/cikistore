@@ -7,11 +7,12 @@ import { useEffect, useState } from "react";
 import Loader from "@/app/components/loading";
 
 const poppins = Poppins({
+  weight: "400",
   subsets: ["latin"],
   variable: "--font-poppins",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+  fallback: ["system-ui", "arial"],
 });
-
 export default function RootLayout({
   children,
 }: {

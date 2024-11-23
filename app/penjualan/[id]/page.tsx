@@ -51,7 +51,7 @@ const Penjualan = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [id]); // Tambahkan id ke dependency array
 
   useEffect(() => {
     if (sukses || error) {
