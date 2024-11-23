@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/dahsboard");
+      const response = await axios.get("/api/dashboard");
 
       setData(response.data.penjualan);
       setStatistik(response.data.statistik);
